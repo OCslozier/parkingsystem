@@ -108,6 +108,7 @@ public class FareCalculatorServiceTest {
         ticket.setParkingSpot(parkingSpot);
         fareCalculatorService.calculateFare(ticket);
         assertEquals( (0.75 * Fare.CAR_RATE_PER_HOUR) , ticket.getPrice());
+        // 0.75 * la constante 1.5 soit 1.125 : tarif pour 45 min, le prix obtenu est 1.5 donc le temps obtenu = 1h au lieu de 45 min
     }
 
     @Test
