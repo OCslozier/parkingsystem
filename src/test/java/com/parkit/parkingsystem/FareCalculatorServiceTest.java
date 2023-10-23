@@ -201,5 +201,6 @@ public class FareCalculatorServiceTest {
 		fareCalculatorService.calculateFare(ticket, true);
 		assertEquals(ticket.getPrice(), Fare.DISCOUNT_BIKE_RATE_PER_HOUR);
 	}
+	
 
 }

@@ -16,23 +16,15 @@ public class FareCalculatorService {
 		double duration = ((outTime - inTime) / (60.0 * 60 * 1000));
 
 		if (duration < 0.5) { // Si en dessous de 30 min de stationnement
-
 			duration = 0;
-
 		}
 
 		switch (ticket.getParkingSpot().getParkingType()) {
 		case CAR: {
 			if (discount) {
 				ticket.setPrice(duration * Fare.DISCOUNT_CAR_RATE_PER_HOUR);
-				System.out.println("Condition de remise de prix CAR");
-				System.out.println("durée : " + duration);
-				System.out.println("tarif : " + Fare.DISCOUNT_CAR_RATE_PER_HOUR);
 			} else {
 				ticket.setPrice(duration * Fare.CAR_RATE_PER_HOUR);
-				System.out.println("Condition de prix normal CAR");
-				System.out.println("durée : " + duration);
-				System.out.println("tarif : " + Fare.CAR_RATE_PER_HOUR);
 			}
 			break;
 
@@ -40,14 +32,8 @@ public class FareCalculatorService {
 		case BIKE: {
 			if (discount) {
 				ticket.setPrice(duration * Fare.DISCOUNT_BIKE_RATE_PER_HOUR);
-				System.out.println("Condition de remise de prix BIKE");
-				System.out.println("durée : " + duration);
-				System.out.println("tarif : " + Fare.DISCOUNT_BIKE_RATE_PER_HOUR);
 			} else {
 				ticket.setPrice(duration * Fare.BIKE_RATE_PER_HOUR);
-				System.out.println("Condition de prix normal BIKE");
-				System.out.println("durée : " + duration);
-				System.out.println("tarif : " + Fare.BIKE_RATE_PER_HOUR);
 			}
 			break;
 

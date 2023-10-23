@@ -36,7 +36,7 @@ public class ParkingService {
 				parkingSpotDAO.updateParking(parkingSpot);// allot this parking space and mark it's availability as
 															// false
 
-				int count = ticketDAO.countTicket(vehicleRegNumber);
+				int count = ticketDAO.getNbTicket(vehicleRegNumber);
 
 				Date inTime = new Date();
 				Ticket ticket = new Ticket();
@@ -51,19 +51,8 @@ public class ParkingService {
 
 				if (count < 1) {
 
-					System.out.println("          W E L CO M E             ");
-					System.out.println("***********************************");
-					System.out.println("* Hello, this is your first visit *");
-					System.out.println("* so allow me to welcome you  :-) *");
-					System.out.println("***********************************");
-					System.out.println("         P R I C I N G             ");
-					System.out.println("***********************************");
-					System.out.println("* Current pricing: 1.5€/h (CARS)  *");
-					System.out.println("* Current pricing: 1.0€/h (BIKE)  *");
-					System.out.println("* Less 30 minutes park free       *");
-					System.out.println("* Fidelity pricing: -5% 2nd visit *");
-					System.out.println("***********************************");
-					System.out.println("");
+					System.out.println("W E L CO M E");
+					System.out.println("Hello, this is your first visit, have a nice day !");
 					System.out.println("Generated Ticket and saved in DB");
 					System.out.println("Please park your vehicle in spot number:" + parkingSpot.getId());
 					System.out.println("Recorded in-time for vehicle number:" + vehicleRegNumber + " is:" + inTime);
@@ -72,19 +61,9 @@ public class ParkingService {
 
 				} else {
 
-					System.out.println("     !!HAPPY TO SEE YOU AGAIN!!     ");
-					System.out.println("************************************");
-					System.out.println("*      Hello,already back ?        *");
-					System.out.println("*   Thank you for your loyalty     *");
-					System.out.println("************************************");
-					System.out.println("   F I D E L I T Y  P R I C I N G   ");
-					System.out.println("************************************");
-					System.out.println("* Current pricing: 1.425€/h (CARS) *");
-					System.out.println("* Current pricing: 0.95 €/h (BIKE) *");
-					System.out.println("* Less 30 minutes park free        *");
-					System.out.println("************************************");
-					System.out.println("");
-					System.out.println("Number of visits before today :" +count);
+					System.out.println("Happy to see you again ! As a regular user of\r\n"
+							+ "our parking, you will get a 5% discount");
+					System.out.println("Number of visits before today :" + count);
 					System.out.println("Generated Ticket and saved in DB");
 					System.out.println("Please park your vehicle in spot number:" + parkingSpot.getId());
 					System.out.println("Recorded in-time for vehicle number:" + vehicleRegNumber + " is:" + inTime);
@@ -123,7 +102,7 @@ public class ParkingService {
 		return parkingSpot;
 	}
 
-	private ParkingType getVehichleType() {
+	public ParkingType getVehichleType() {
 		System.out.println("Please select vehicle type from menu");
 		System.out.println("1 CAR");
 		System.out.println("2 BIKE");
@@ -147,13 +126,11 @@ public class ParkingService {
 			String vehicleRegNumber = getVehichleRegNumber();
 			Ticket ticket = ticketDAO.getTicket(vehicleRegNumber);
 
-			int count = ticketDAO.countTicket(vehicleRegNumber);
+			int countTicket = ticketDAO.getNbTicket(vehicleRegNumber);
 			Date outTime = new Date();
 			ticket.setOutTime(outTime);
 
-			// fareCalculatorService.calculateFare(ticket);
-
-			if (count > 1) {
+			if (countTicket > 1) {
 				fareCalculatorService.calculateFare(ticket, true); // Appliquer la réduction
 			} else {
 				fareCalculatorService.calculateFare(ticket, false); // Pas de réduction
@@ -163,7 +140,7 @@ public class ParkingService {
 				ParkingSpot parkingSpot = ticket.getParkingSpot();
 				parkingSpot.setAvailable(true);
 				parkingSpotDAO.updateParking(parkingSpot);
-				System.out.println("Nombre de records:" + count);
+				System.out.println("Nombre de records:" + countTicket);
 				System.out.println("Please pay the parking fare:" + ticket.getPrice());
 				System.out.println(
 						"Recorded out-time for vehicle number:" + ticket.getVehicleRegNumber() + " is:" + outTime);
