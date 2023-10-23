@@ -56,6 +56,12 @@
 			<artifactId>maven-assembly-plugin</artifactId>
 			<version>3.6.0</version>
 		</dependency>
+		<dependency>
+    <groupId>org.apache.maven.doxia</groupId>
+    <artifactId>doxia-site-renderer</artifactId>
+    <version>2.0.0-M12</version> <!-- Utilisez la version appropriée -->
+</dependency>
+
 	</dependencies>
 
 	<build>
@@ -84,6 +90,11 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-site-plugin</artifactId>
+            <version>4.0.0-M10</version> <!-- Utilisez la version appropriée -->
+        </plugin>
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.22.0</version>
