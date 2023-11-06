@@ -13,7 +13,7 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 
 public class TicketDAO {
-	
+
 	private static final Logger logger = LogManager.getLogger("TicketDAO");
 
 	public DataBaseConfig dataBaseConfig = new DataBaseConfig();
@@ -79,7 +79,6 @@ public class TicketDAO {
 			ps.execute();
 			return true;
 		} catch (Exception ex) {
-			logger.error("Error saving ticket info", ex);
 		} finally {
 			dataBaseConfig.closeConnection(con);
 		}
@@ -87,7 +86,7 @@ public class TicketDAO {
 	}
 
 	public int getNbTicket(String vehicleRegNumber) {
-			 
+
 		Connection con = null;
 		int countTicket = 0;
 		try {

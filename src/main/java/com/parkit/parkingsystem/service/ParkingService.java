@@ -51,24 +51,18 @@ public class ParkingService {
 
 				if (count < 1) {
 
-					System.out.println("W E L CO M E");
 					System.out.println("Hello, this is your first visit, have a nice day !");
 					System.out.println("Generated Ticket and saved in DB");
 					System.out.println("Please park your vehicle in spot number:" + parkingSpot.getId());
 					System.out.println("Recorded in-time for vehicle number:" + vehicleRegNumber + " is:" + inTime);
-					System.out.println("");
-					System.out.println("");
 
 				} else {
 
 					System.out.println("Happy to see you again ! As a regular user of\r\n"
 							+ "our parking, you will get a 5% discount");
-					System.out.println("Number of visits before today :" + count);
 					System.out.println("Generated Ticket and saved in DB");
 					System.out.println("Please park your vehicle in spot number:" + parkingSpot.getId());
 					System.out.println("Recorded in-time for vehicle number:" + vehicleRegNumber + " is:" + inTime);
-					System.out.println("");
-					System.out.println("");
 
 				}
 			}
@@ -125,13 +119,12 @@ public class ParkingService {
 		try {
 			String vehicleRegNumber = getVehichleRegNumber();
 			Ticket ticket = ticketDAO.getTicket(vehicleRegNumber);
-
 			int countTicket = ticketDAO.getNbTicket(vehicleRegNumber);
 			Date outTime = new Date();
 			ticket.setOutTime(outTime);
 
 			if (countTicket > 1) {
-				fareCalculatorService.calculateFare(ticket, true); // Appliquer la réduction
+				fareCalculatorService.calculateFare(ticket, true);
 			} else {
 				fareCalculatorService.calculateFare(ticket, false); // Pas de réduction
 			}
@@ -140,15 +133,17 @@ public class ParkingService {
 				ParkingSpot parkingSpot = ticket.getParkingSpot();
 				parkingSpot.setAvailable(true);
 				parkingSpotDAO.updateParking(parkingSpot);
-				System.out.println("Nombre de records:" + countTicket);
 				System.out.println("Please pay the parking fare:" + ticket.getPrice());
 				System.out.println(
 						"Recorded out-time for vehicle number:" + ticket.getVehicleRegNumber() + " is:" + outTime);
 			} else {
 				System.out.println("Unable to update ticket information. Error occurred");
 			}
+
 		} catch (Exception e) {
 			logger.error("Unable to process exiting vehicle", e);
+
 		}
+
 	}
 }
