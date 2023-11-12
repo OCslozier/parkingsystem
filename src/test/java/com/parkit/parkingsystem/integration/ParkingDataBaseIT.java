@@ -61,12 +61,11 @@ public class ParkingDataBaseIT {
 		ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
 		parkingService.processIncomingVehicle();
 
-		//TODO: check that a ticket is actualy saved in DB and Parking table is updated with availability
-		
 		Ticket ticket = ticketDAO.getTicket(vehicleRegNumber);
+
 		assertNotNull(ticket);
-		int nextAvailableSlot = parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR);
-		assertNotEquals(1, nextAvailableSlot);
+		assertEquals(ParkingType.CAR, ticket.getParkingSpot().getParkingType());
+		assertFalse(ticket.getParkingSpot().isAvailable());
 
 	}
 
@@ -75,55 +74,45 @@ public class ParkingDataBaseIT {
 
 		ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
 
-		Date currentTime = new Date();
 		Ticket ticket = new Ticket();
-		ticket.setInTime(new Date(currentTime.getTime() - (60 * 60 * 1000)));
+		ticket.setInTime(new Date(System.currentTimeMillis() - (60 * 60 * 1000)));
 		ticket.setVehicleRegNumber(vehicleRegNumber);
 		ticket.setParkingSpot(new ParkingSpot(1, ParkingType.CAR, false));
 		ticketDAO.saveTicket(ticket);
 		parkingService.processExitingVehicle();
-		
-		//TODO: check that the fare generated and out time are populated correctly in the database
 
 		ticket = ticketDAO.getTicket(vehicleRegNumber);
-		
+
 		assertTrue(ticket.getPrice() >= 0);
 		assertNotNull(ticket.getOutTime());
 	}
 
-	//estimate the calculation of the price of a ticket via calling processIncomingVehicle and processExitingVehicle
-	//in the case of a recurring user.
-	
 	@Test
 	public void testParkingLotExitRecurringUser() {
 
 		ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
 
-		Date currentTime = new Date();
 		Ticket firstTicket = new Ticket();
 		firstTicket.setParkingSpot(new ParkingSpot(1, ParkingType.CAR, false));
 		firstTicket.setVehicleRegNumber(vehicleRegNumber);
-		firstTicket.setInTime(new Date(currentTime.getTime() - 4 * (60 * 60 * 1000)));
-		firstTicket.setOutTime(new Date(currentTime.getTime() - 3 * (60 * 60 * 1000)));
+		firstTicket.setInTime(new Date(System.currentTimeMillis() - 4 * (60 * 60 * 1000)));
+		firstTicket.setOutTime(new Date(System.currentTimeMillis() - 3 * (60 * 60 * 1000)));
 		firstTicket.setPrice(1.5);
 		ticketDAO.saveTicket(firstTicket);
-		
-		Date secondCurrentTime = new Date();
+
 		Ticket secondTicket = new Ticket();
 		secondTicket.setParkingSpot(new ParkingSpot(1, ParkingType.CAR, false));
 		secondTicket.setVehicleRegNumber(vehicleRegNumber);
-		secondTicket.setInTime(new Date(secondCurrentTime.getTime() - 2 * (60 * 60 * 1000)));
+		secondTicket.setInTime(new Date(System.currentTimeMillis() - 2 * (60 * 60 * 1000)));
 		ticketDAO.saveTicket(secondTicket);
-		
 
 		parkingService.processExitingVehicle();
-
+		
 		secondTicket = ticketDAO.getTicket(vehicleRegNumber);
-		long duration = (secondTicket.getOutTime().getTime() - secondTicket.getInTime().getTime()) / (60 * 60 * 1000);
+		double duration = (secondTicket.getOutTime().getTime() - secondTicket.getInTime().getTime()) / (60 * 60 * 1000);	
 		double expectedFare = Fare.DISCOUNT_CAR_RATE_PER_HOUR * duration;
-		assertEquals(expectedFare, secondTicket.getPrice(), 0.005);
+		assertEquals(expectedFare, secondTicket.getPrice());
 
 	}
 
 }
-
