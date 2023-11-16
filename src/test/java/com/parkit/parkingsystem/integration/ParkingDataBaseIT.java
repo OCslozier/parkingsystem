@@ -17,9 +17,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import static org.mockito.Mockito.lenient;
 import java.util.Date;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class ParkingDataBaseIT {
@@ -45,8 +45,6 @@ public class ParkingDataBaseIT {
 	@BeforeEach //
 	private void setUpPerTest() throws Exception {
 
-		lenient().when(inputReaderUtil.readSelection()).thenReturn(1);
-		lenient().when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
 		dataBasePrepareService.clearDataBaseEntries();
 	}
 
@@ -59,6 +57,8 @@ public class ParkingDataBaseIT {
 	public void testParkingACar() {
 
 		ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+		when(inputReaderUtil.readSelection()).thenReturn(1);
+		when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
 		parkingService.processIncomingVehicle();
 
 		Ticket ticket = ticketDAO.getTicket(vehicleRegNumber);
@@ -73,6 +73,8 @@ public class ParkingDataBaseIT {
 	public void testParkingLotExit() {
 
 		ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+
+		when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
 
 		Ticket ticket = new Ticket();
 		ticket.setInTime(new Date(System.currentTimeMillis() - (60 * 60 * 1000)));
@@ -92,6 +94,8 @@ public class ParkingDataBaseIT {
 
 		ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
 
+		when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
+
 		Ticket firstTicket = new Ticket();
 		firstTicket.setParkingSpot(new ParkingSpot(1, ParkingType.CAR, false));
 		firstTicket.setVehicleRegNumber(vehicleRegNumber);
@@ -107,9 +111,9 @@ public class ParkingDataBaseIT {
 		ticketDAO.saveTicket(secondTicket);
 
 		parkingService.processExitingVehicle();
-		
+
 		secondTicket = ticketDAO.getTicket(vehicleRegNumber);
-		double duration = (secondTicket.getOutTime().getTime() - secondTicket.getInTime().getTime()) / (60 * 60 * 1000);	
+		double duration = (secondTicket.getOutTime().getTime() - secondTicket.getInTime().getTime()) / (60 * 60 * 1000);
 		double expectedFare = Fare.DISCOUNT_CAR_RATE_PER_HOUR * duration;
 		assertEquals(expectedFare, secondTicket.getPrice());
 
