@@ -6,3 +6,4 @@ public class Fare {
     public static final double DISCOUNT_CAR_RATE_PER_HOUR = 1.425;
     public static final double DISCOUNT_BIKE_RATE_PER_HOUR = 0.95;
 }
+

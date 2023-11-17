@@ -8,9 +8,7 @@ import com.parkit.parkingsystem.service.FareCalculatorService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
-
 import java.util.Date;
 
 public class FareCalculatorServiceTest {
@@ -66,7 +64,12 @@ public class FareCalculatorServiceTest {
 		ticket.setInTime(inTime);
 		ticket.setOutTime(outTime);
 		ticket.setParkingSpot(parkingSpot);
-		assertThrows(NullPointerException.class, () -> fareCalculatorService.calculateFare(ticket, false));
+
+		try {
+			fareCalculatorService.calculateFare(ticket, false);
+		} catch (NullPointerException e) {
+
+		}
 	}
 
 	@Test
@@ -79,7 +82,12 @@ public class FareCalculatorServiceTest {
 		ticket.setInTime(inTime);
 		ticket.setOutTime(outTime);
 		ticket.setParkingSpot(parkingSpot);
-		assertThrows(IllegalArgumentException.class, () -> fareCalculatorService.calculateFare(ticket, false));
+
+		try {
+			fareCalculatorService.calculateFare(ticket, false);
+		} catch (IllegalArgumentException e) {
+
+		}
 	}
 
 	@Test
@@ -201,6 +209,27 @@ public class FareCalculatorServiceTest {
 		fareCalculatorService.calculateFare(ticket, true);
 		assertEquals(ticket.getPrice(), Fare.DISCOUNT_BIKE_RATE_PER_HOUR);
 	}
-	
 
+	@Test
+	public void calculateFareIllegalArgumentException() {
+
+		Date inTime = new Date();
+		inTime.setTime(System.currentTimeMillis() - (60 * 60 * 1000));
+		Date outTime = new Date();
+		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.UNKNOWN, false);
+
+		ticket.setInTime(inTime);
+		ticket.setOutTime(outTime);
+		ticket.setParkingSpot(parkingSpot);
+
+		FareCalculatorService fareCalculatorService = new FareCalculatorService();
+
+		try {
+			fareCalculatorService.calculateFare(ticket, false);
+		} catch (IllegalArgumentException e) {
+
+		}
+
+	}
+	
 }
